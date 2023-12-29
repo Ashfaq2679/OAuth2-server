@@ -1,0 +1,17 @@
+---
+server:
+  port: 9999
+
+config:
+  authserver:
+    access-token:ttl: 2
+    client-id: postman
+    client-secret: postman-secret
+
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:9090
+    
