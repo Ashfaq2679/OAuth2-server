@@ -6,6 +6,8 @@ import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -56,6 +58,7 @@ public class AuthServerConfig {
 	@Value("${config.authserver.access-token.ttl:2}")
 	private long accessTokenInMinutes;
 
+	//TODO: adjust yml file to set list
 	@Value("${config.authserver.client-id:postman}")
 	private String clientId;
 
@@ -73,14 +76,24 @@ public class AuthServerConfig {
 		RegisteredClient postmanClient = RegisteredClient.withId(UUID.randomUUID().toString()).clientId(clientId)
 				.clientSecret(bcryptEncoder().encode(clientSecret))
 				.clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-				.clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST)
 				.authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
-				.authorizationGrantType(AuthorizationGrantType.JWT_BEARER).scope(SCOPE)
+				.scope(SCOPE)
 				.tokenSettings(TokenSettings.builder().accessTokenFormat(OAuth2TokenFormat.SELF_CONTAINED)
 						.accessTokenTimeToLive(Duration.ofMinutes(accessTokenInMinutes)).build())
 				.build();
 		
-		return new InMemoryRegisteredClientRepository(postmanClient);
+		RegisteredClient apiClient = RegisteredClient.withId(UUID.randomUUID().toString()).clientId("api-client")
+				.clientSecret(bcryptEncoder().encode("api-clientSecret"))
+				.clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST)
+				.authorizationGrantType(AuthorizationGrantType.JWT_BEARER).scope(SCOPE)
+				.tokenSettings(TokenSettings.builder().accessTokenFormat(OAuth2TokenFormat.SELF_CONTAINED)
+						.accessTokenTimeToLive(Duration.ofMinutes(accessTokenInMinutes)).build())
+				.build();
+		List<RegisteredClient> clientList = new ArrayList<>();
+		clientList.add(postmanClient);
+		clientList.add(apiClient);
+		
+		return new InMemoryRegisteredClientRepository(clientList);
 	}
 
 	@Bean

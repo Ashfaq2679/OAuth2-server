@@ -7,6 +7,8 @@ config:
     access-token:ttl: 2
     client-id: postman
     client-secret: postman-secret
+    header:
+      login-id: X_LOGIN_ID
 
 spring:
   security:
