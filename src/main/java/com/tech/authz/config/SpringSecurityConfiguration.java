@@ -14,9 +14,10 @@ public class SpringSecurityConfiguration {
 	@Bean
 	@Order(1)
 	SecurityFilterChain configureSecurityFilterChain(HttpSecurity http) throws Exception {
-		http.authorizeHttpRequests(authorizeRequests -> authorizeRequests.anyRequest().authenticated())
+		http.authorizeHttpRequests(authorizeRequests -> authorizeRequests//.requestMatchers("/actuator/**").permitAll()
+				.anyRequest().authenticated())
 		.formLogin(Customizer.withDefaults());
-		
+
 		return http.build();
 	}
 }

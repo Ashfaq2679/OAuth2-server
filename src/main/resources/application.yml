@@ -9,6 +9,7 @@ config:
     client-secret: postman-secret
     header:
       login-id: X_LOGIN_ID
+      tracing-id: X_TRACING_ID
 
 spring:
   security:

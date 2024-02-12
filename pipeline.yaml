@@ -1,0 +1,18 @@
+version: v1
+tasks:
+  - ref: java-gradle-build
+    name: build-authz-server
+    params:
+      - name: jdk-version
+        value: 17
+      - name: context-dir
+        value: auth-server
+  - ref: container-image-build
+    name: container-authorization-server
+    params:
+      - name: context-dir
+        value: auth-server
+      - name: dockerfile
+        value: dockerfile
+    runAfter:
+      - build-authorization-server

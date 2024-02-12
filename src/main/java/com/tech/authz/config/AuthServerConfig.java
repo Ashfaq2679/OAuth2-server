@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -54,6 +55,9 @@ public class AuthServerConfig {
 	private static final String SCOPE = "READ";
 
 	private static final String ISSUER_URL = "http://localhost:9091";
+	
+	@Autowired
+	private User user;
 
 	@Value("${config.authserver.access-token.ttl:2}")
 	private long accessTokenInMinutes;
@@ -173,7 +177,8 @@ public class AuthServerConfig {
 
 	@Bean
 	OAuth2TokenCustomizer<JwtEncodingContext> oAuth2TokenCustomizer() {
-		return context -> findClaims(context, getUser().getLoginId());
+
+		return context -> findClaims(context, user.getLoginId());
 	}
 
 	private void findClaims(JwtEncodingContext context, String loginId) {
